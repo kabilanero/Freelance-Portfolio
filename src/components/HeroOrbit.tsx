@@ -5,6 +5,7 @@ import imgport from "../assests/WhatsApp Image 2024-09-20 at 12.12.36 PM-removeb
 import Weblogo from "../assests/Weblogo.png";
 import RotatingText from "./ui/Orbitcontent";
 import BlobBackground from './ui/blobeffect';
+import { Code } from 'lucide-react';
 
 
 const MouseParticles = () => {
@@ -168,7 +169,7 @@ const orbitScale = useTransform(
   return (
     <div id='home'
       ref={containerRef}
-      className="relative min-h-[300vh] transition-all duration-500"
+      className="relative min-h-[300vh] transition-all duration-500 "
       style={gradientStyle}
     >
    
@@ -181,16 +182,29 @@ const orbitScale = useTransform(
       {/* Fixed viewport container */}
       <div className="sticky top-10 h-screen overflow-hidden">
 
-
-
-      <button
+<button
   onClick={() => window.open("https://discord.com/channels/1448729391659090073/1448729689563725965", "_blank")}
-  className="absolute top-[7rem] md:top-8 left-1/2 -translate-x-1/2 z-50 
-             px-6 py-2 rounded-lg bg-primary text-white font-semibold
-             shadow-lg hover:bg-primary/90 transition-all"
+  className="
+    absolute top-[7rem] md:top-8 left-1/2 -translate-x-1/2 z-50
+    flex items-center gap-3 px-7 py-3
+    rounded-2xl
+    backdrop-blur-md bg-white/10 
+    border border-white/20
+    text-white
+    shadow-[0_0_25px_rgba(255,255,255,0.1)]
+    hover:bg-white/20 hover:border-white/30 
+    transition-all duration-300
+  "
 >
- Join My Dev-Community 
+  <span className="font-semibold tracking-wide">{`</> Join Our Dev-Community`}</span>
 </button>
+
+
+
+
+
+
+
 
         {/* Orbit Section */}
         <motion.div
