@@ -55,7 +55,7 @@ const cardData: BentoCardProps[] = [
     description: "Centralized data view",
     label: "Web-SEO optimizing",
     imgWidth: "100%",
-    imgHeight: "80%",
+    imgHeight: "90%",
   },
   {
     color: "#060010",
@@ -826,7 +826,7 @@ if (enableStars) {
     height: card.imgHeight || "60px",
     objectFit: "contain",
   }}
-  className="mb-1"
+  className="mb-1/2"
           />
         )}
         
