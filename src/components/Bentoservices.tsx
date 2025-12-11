@@ -46,7 +46,7 @@ const cardData: BentoCardProps[] = [
     description: "Best research insights",
     label: "Insights",
     imgWidth: "90%",         
-    imgHeight: "70%",       
+    imgHeight: "69%",       
   },
   {
     color: "#060010",
