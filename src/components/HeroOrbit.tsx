@@ -182,7 +182,16 @@ const orbitScale = useTransform(
       <div className="sticky top-10 h-screen overflow-hidden">
 
 
-   
+
+      <button
+  onClick={() => window.open("https://discord.com/channels/1448729391659090073/1448729689563725965", "_blank")}
+  className="absolute top-[7rem] md:top-8 left-1/2 -translate-x-1/2 z-50 
+             px-6 py-2 rounded-lg bg-primary text-white font-semibold
+             shadow-lg hover:bg-primary/90 transition-all"
+>
+ Join My Dev-Community 
+</button>
+
         {/* Orbit Section */}
         <motion.div
           style={{
