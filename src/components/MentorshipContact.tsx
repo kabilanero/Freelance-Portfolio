@@ -106,7 +106,7 @@ const handleBookingSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
   try {
-    const response = await fetch("http://localhost:3000/api/forms/booking", {
+    const response = await fetch("https://freelanceportfoliobackend.onrender.com/api/forms/booking", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -145,7 +145,7 @@ const handleBookingSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
   try {
-    const response = await fetch("http://localhost:3000/api/forms/contact", {
+    const response = await fetch("https://freelanceportfoliobackend.onrender.com/api/forms/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(contactData),
