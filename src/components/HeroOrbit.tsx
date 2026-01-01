@@ -259,7 +259,7 @@ const orbitScale = useTransform(
                         className="bg-gradient-to-r from-primary via-secondary to-primary  text-3xl flex flex-row gap-3 items-center justify-center
                      bg-clip-text text-transparent animate-pulse leading-none"
                       >
-                       <span className="Building first-letter:text-4xl text-lg antialiased tracking-tight titan-one-regular"> Building </span>
+                       <span className="Building first-letter:text-4xl text-lg antialiased tracking-tight titan-one-regular"> We build </span>
                         <RotatingText 
         texts={[`React `, `Js `, `Animated `, `Cool! site `, `Using `]}
         mainClassName="sm:px-4 md:px-3 lg:px-6
