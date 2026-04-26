@@ -85,7 +85,7 @@ const MobileSocialPanel = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -24, transition: { duration: 0.18 } }}
             transition={{ duration: 0.35, type: 'spring', stiffness: 300, damping: 26 }}
-            className="fixed top-[142px] left-0 right-0 z-40 flex justify-center pointer-events-none"
+            className="fixed top-[142px] -left-6 right-0 z-40 flex justify-center pointer-events-none"
           >
             <div className="flex flex-row items-center gap-2 pointer-events-auto
               bg-black/50 backdrop-blur-md border border-primary/25

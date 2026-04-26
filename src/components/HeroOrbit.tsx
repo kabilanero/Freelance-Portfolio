@@ -206,105 +206,127 @@ const HeroOrbit = () => {
       {/* Sticky Container */}
       <div className="sticky top-0 h-screen overflow-hidden">
         
-        {/* Orbit Section */}
+       {/* Orbit Section */}
+<motion.div
+  style={{
+    x: orbitX,
+    scale: orbitScale,
+    opacity: orbitOpacity,
+  }}
+  className="absolute inset-0 flex flex-col items-center justify-center"
+>
+  {/* Orbit ring + inner content */}
+  <div className="relative flex items-center justify-center">
+    <div
+      className="orbit-ring animate-float rounded-full border-2 border-primary/30 shadow-2xl"
+      style={{ width: orbitSize, height: orbitSize }}
+    />
+
+    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="space-y-4 md:space-y-6 max-w-[90%] md:max-w-full"
+      >
+        {/* Logo */}
         <motion.div
-          style={{
-            x: orbitX,
-            scale: orbitScale,
-            opacity: orbitOpacity,
-          }}
-          className="absolute inset-0 flex items-center justify-center"
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          className="inline-block rounded-full w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-52 lg:h-52 -mt-8"
         >
-          <div className="relative flex items-center justify-center">
-            <div 
-              className="orbit-ring animate-float rounded-full border-2 border-primary/30 shadow-2xl"
-              style={{ width: orbitSize, height: orbitSize }}
-            />
-            
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="space-y-4 md:space-y-6 max-w-[90%] md:max-w-full"
-              >
-                {/* Logo */}
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  className="inline-block rounded-full w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-52 lg:h-52 mx-auto"
-                >
-                  <img src={Weblogo} alt="logo" className="w-full h-full object-contain" />
-                </motion.div>
-
-                <div className="md:-mt-6">
-                  <div className="md:-mt-6">
-                    <h1
-                      className="font-bold tracking-tight leading-none "
-                      style={{ fontSize: "clamp(2rem, 6vw, 3.75rem)" }}
-                    >
-                      <p
-                        className="bg-gradient-to-r from-primary via-secondary to-primary text-3xl flex flex-row gap-3 items-center justify-center
-                     bg-clip-text text-transparent animate-pulse leading-none"
-                      >
-                       <span className="Building first-letter:text-4xl text-lg antialiased tracking-tight titan-one-regular"> We Build </span>
-                        <RotatingText 
-                          texts={[`React (Js/Ts ) `, ` Animated `, `Cool! site `, `Using `]}
-                          mainClassName="sm:px-4 md:px-3 lg:px-6
-                            bg-cyan-400 text-black overflow-hidden sm:py-1/2 md:py-1/2 justify-center rounded-lg text-2xl titan-one-regular"
-                          staggerFrom={"last"}
-                          initial={{ y: "100%" }}
-                          exit={{ y: "-120%" }}
-                          staggerDuration={0.085}
-                          splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
-                          transition={{ type: "spring", damping: 30, stiffness: 500 }}
-                          rotationInterval={3000}
-                        />
-                      </p>
-                      <span
-                        className="text-[#fafafa]-500 leading-none"
-                        style={{ fontSize: "clamp(1.1rem, 2vw, 0.45rem)" }}
-                      >
-                        Future ready web experiences
-                      </span>
-                    </h1>
-
-                    <p
-                      className="text-[#fcab29] max-w-md mx-auto mt-2 titan-one-regular"
-                      style={{ fontSize: "clamp(0.875rem, 2.5vw, 1.0rem)" }}
-                    >
-                      Crafting digital experiences that push boundaries
-                    </p>
-                  </div>
-
-                  <div className="flex gap-3 sm:gap-4 justify-center pt-2 sm:pt-2 flex-wrap mt-2">
-                    <button
-                      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
-                      style={{
-                        height: "clamp(2.25rem, 5vw, 2.75rem)",
-                        padding: "0 clamp(1rem, 3vw, 2rem)",
-                        fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-                      }}
-                    >
-                      Get Started
-                    </button>
-                    <button
-                      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/30 bg-background hover:bg-primary/10 text-foreground"
-                      style={{
-                        height: "clamp(2.25rem, 5vw, 2.75rem)",
-                        padding: "0 clamp(1rem, 3vw, 2rem)",
-                        fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-                      }}
-                    >
-                      Learn More
-                    </button>
-                  </div>
-                </div>
-
-              </motion.div>
-            </div>
-          </div>
+          <img src={Weblogo} alt="logo" className="w-full h-full object-contain" />
         </motion.div>
+
+        <div className="md:-mt-6">
+          <div className="md:-mt-6">
+            <h1
+              className="font-bold tracking-tight leading-none"
+              style={{ fontSize: "clamp(2rem, 6vw, 3.75rem)" }}
+            >
+              <p className="bg-gradient-to-r from-primary via-secondary to-primary text-3xl flex flex-row gap-3 items-center justify-center bg-clip-text text-transparent animate-pulse leading-none">
+                <span className="Building first-letter:text-4xl text-lg antialiased tracking-tight titan-one-regular"> We Build </span>
+                <RotatingText
+                  texts={[`React(Js/Ts) `, ` Animated `, `Cool! site `, `Using `]}
+                  mainClassName="sm:px-4 md:px-3 lg:px-6 bg-cyan-400 text-black overflow-hidden sm:py-1/2 md:py-1/2 justify-center rounded-lg text-2xl titan-one-regular"
+                  staggerFrom={"last"}
+                  initial={{ y: "100%" }}
+                  exit={{ y: "-120%" }}
+                  staggerDuration={0.085}
+                  splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                  transition={{ type: "spring", damping: 30, stiffness: 500 }}
+                  rotationInterval={3000}
+                />
+              </p>
+              <span
+                className="text-[#fafafa]-500 leading-none"
+                style={{ fontSize: "clamp(1.1rem, 2vw, 0.45rem)" }}
+              >
+                Future ready web experiences
+              </span>
+            </h1>
+
+            <p
+              className="text-[#fcab29] max-w-md mx-auto mt-2 titan-one-regular"
+              style={{ fontSize: "clamp(0.875rem, 2.5vw, 1.0rem)" }}
+            >
+              Crafting digital experiences that push boundaries
+            </p>
+          </div>
+
+          {/* DESKTOP only buttons — inside orbit */}
+          <div className="hidden md:flex gap-3 sm:gap-4 justify-center pt-2 flex-wrap">
+            <button
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+              style={{
+                height: "clamp(2.25rem, 5vw, 2.75rem)",
+                padding: "0 clamp(1rem, 3vw, 2rem)",
+                fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+              }}
+            >
+              Get Started
+            </button>
+            <button
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/30 bg-background hover:bg-primary/10 text-foreground"
+              style={{
+                height: "clamp(2.25rem, 5vw, 2.75rem)",
+                padding: "0 clamp(1rem, 3vw, 2rem)",
+                fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+              }}
+            >
+              Learn More
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  </div>
+
+  {/* MOBILE only buttons — outside orbit ring, below it */}
+  <div className="flex md:hidden gap-3 justify-center mt-8 px-6 w-full">
+    <button
+      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+      style={{
+        height: "clamp(2.25rem, 5vw, 2.75rem)",
+        padding: "0 clamp(1rem, 3vw, 2rem)",
+        fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+      }}
+    >
+      Get Started
+    </button>
+    <button
+      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/30 bg-background hover:bg-primary/10 text-foreground"
+      style={{
+        height: "clamp(2.25rem, 5vw, 2.75rem)",
+        padding: "0 clamp(1rem, 3vw, 2rem)",
+        fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+      }}
+    >
+      Learn More
+    </button>
+  </div>
+
+</motion.div>
 
         {/* Profile Section */}
         <motion.div
@@ -312,7 +334,7 @@ const HeroOrbit = () => {
             x: profileX,
             opacity: profileOpacity,
           }}
-          className="absolute right-[15%] md:right-[10%] top-1/2 -translate-y-1/2 w-[280px] sm:w-[350px] md:w-[400px] lg:w-[450px]"
+          className="absolute right-[12%] md:right-[10%] top-1/2 -translate-y-1/2 w-[280px] sm:w-[350px] md:w-[400px] lg:w-[450px]"
         >
           <div className="space-y-6">
             <motion.div
