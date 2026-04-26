@@ -5,6 +5,7 @@ import Weblogo from "../assests/Weblogo.png";
 import RotatingText from "./ui/Orbitcontent";
 import BlobBackground from './ui/blobeffect';
 import { Code, Github, Linkedin, Twitter, Instagram, DiscIcon as Discord, Mail } from 'lucide-react';
+import SocialPanel from './Socialconnector';
 
 // Optimized Mouse Particles with throttling
 const MouseParticles = () => {
@@ -115,174 +116,6 @@ const MouseParticles = () => {
   return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-50" />;
 };
 
-// Social Connector Component with animated lines
-const SocialConnector = ({ 
-  icon: Icon, 
-  label, 
-  href, 
-  index, 
-  total,
-  isMobile 
-}: { 
-  icon: any; 
-  label: string; 
-  href: string; 
-  index: number; 
-  total: number;
-  isMobile: boolean;
-}) => {
-  const [isHovered, setIsHovered] = useState(false);
-  
-  return (
-    <div className="relative flex items-center">
-      {/* Connector Line */}
-      {index < total - 1 && (
-        <div className={`
-          absolute bg-gradient-to-b from-primary/30 to-primary/10
-          ${isMobile 
-            ? `left-0 right-0 h-[2px] top-full` 
-            : `left-1/2 -translate-x-1/2 w-[2px] bottom-full`
-          }
-        `}
-        style={{
-          [isMobile ? 'width' : 'height']: isMobile ? '100%' : '60px',
-          [isMobile ? 'left' : 'top']: isMobile ? '0' : '-60px',
-        }}>
-          <motion.div
-            className={`absolute ${isMobile ? 'h-full w-full' : 'w-full h-full'} bg-gradient-to-r from-primary to-secondary`}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-            style={{
-              [isMobile ? 'width' : 'height']: isMobile ? '0%' : '0%',
-            }}
-          >
-            <motion.div
-              animate={{ 
-                [isMobile ? 'width' : 'height']: '100%' 
-              }}
-              transition={{ duration: 1, delay: index * 0.1 }}
-              className={`${isMobile ? 'h-full' : 'w-full'} bg-gradient-to-r from-primary to-secondary`}
-            />
-          </motion.div>
-        </div>
-      )}
-      
-      {/* Social Icon Button */}
-      <motion.a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`
-          relative group z-10
-          flex items-center justify-center
-          rounded-full bg-gradient-to-br from-primary/20 to-secondary/20
-          backdrop-blur-sm border border-primary/30
-          transition-all duration-300
-          ${isMobile ? 'w-12 h-12' : 'w-14 h-14'}
-        `}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: index * 0.1, type: "spring", stiffness: 300 }}
-        whileHover={{ scale: 1.1, rotate: 360 }}
-      >
-        <Icon className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-primary transition-all duration-300 group-hover:text-secondary`} />
-        
-        {/* Tooltip */}
-        <div className={`
-          absolute whitespace-nowrap px-3 py-1 rounded-lg bg-background/90 backdrop-blur-sm
-          text-xs font-medium border border-primary/30 shadow-lg transition-all duration-300
-          ${isMobile 
-            ? 'bottom-full mb-2 left-1/2 -translate-x-1/2' 
-            : 'left-full ml-3 top-1/2 -translate-y-1/2'
-          }
-          opacity-0 invisible group-hover:opacity-100 group-hover:visible
-        `}>
-          {label}
-        </div>
-      </motion.a>
-    </div>
-  );
-};
-
-// Right Side Social Panel
-const SocialPanel = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const socialLinks = [
-    { icon: Discord, label: "Discord Community", href: "https://discord.com/channels/1448729391659090073/1448729689563725965" },
-    { icon: Github, label: "GitHub", href: "https://github.com/kabilanero" },
-    { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/kabilan12-j/" },
-    { icon: Twitter, label: "Twitter", href: "https://x.com/kabilrhode0000" },
-    { icon: Instagram, label: "Instagram", href: "https://instagram.com" },
-    { icon: Mail, label: "Email", href: "mailto:kapilrhode0000@gmail.com" },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 100 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: 0.5 }}
-      className={`
-        fixed z-40
-        ${isMobile 
-          ? 'bottom-6 left-0 right-0 flex justify-center' 
-          : 'left-6 top-1/2 -translate-y-1/2'
-        }
-      `}
-    >
-      <div className={`
-        flex gap-4
-        ${isMobile ? 'flex-row' : 'flex-col'}
-      `}>
-        {/* Discord Avatar Circle */}
-        <motion.div
-          className={`
-            relative flex items-center justify-center
-            bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500
-            rounded-full shadow-2xl border-2 border-white/20
-            ${isMobile ? 'w-16 h-16' : 'w-20 h-20'}
-          `}
-          whileHover={{ scale: 1.05, rotate: -90, x: -5 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 animate-pulse opacity-50 blur-xl" />
-          <Discord className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} text-white`} />
-          
-          {/* Online Status Indicator */}
-          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
-        </motion.div>
-
-        {/* Connectors and Social Icons */}
-        <div className={`
-          flex gap-3 items-center
-          ${isMobile ? 'flex-row ml-2' : 'flex-col'}
-        `}>
-          {socialLinks.map((link, index) => (
-            <SocialConnector
-              key={link.label}
-              icon={link.icon}
-              label={link.label}
-              href={link.href}
-              index={index}
-              total={socialLinks.length}
-              isMobile={isMobile}
-            />
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
 
 const HeroOrbit = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -479,7 +312,7 @@ const HeroOrbit = () => {
             x: profileX,
             opacity: profileOpacity,
           }}
-          className="absolute right-[5%] md:right-[10%] top-1/2 -translate-y-1/2 w-[280px] sm:w-[350px] md:w-[400px] lg:w-[450px]"
+          className="absolute right-[15%] md:right-[10%] top-1/2 -translate-y-1/2 w-[280px] sm:w-[350px] md:w-[400px] lg:w-[450px]"
         >
           <div className="space-y-6">
             <motion.div
