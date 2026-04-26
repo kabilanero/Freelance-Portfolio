@@ -5,9 +5,37 @@ const About = () => {
     <section className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white px-6 py-16">
       <div className="max-w-6xl mx-auto">
         {/* Heading */}
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-center">
-          About WebCodeFuels
-        </h1>
+        {/* Premium Header */}
+<div className="text-center mb-16 relative">
+  
+  {/* Glow Background */}
+  <div className="absolute inset-0 flex justify-center">
+    <div className="w-72 h-72 bg-purple-600 opacity-20 blur-3xl rounded-full"></div>
+  </div>
+
+  {/* Main Title */}
+  <h1 className="
+    relative z-10
+    text-4xl md:text-6xl font-extrabold tracking-tight
+    bg-gradient-to-r from-purple-400 via-pink-300 to-indigo-400
+    bg-clip-text text-transparent
+  ">
+    WebCodeFuels
+  </h1>
+
+  {/* Subtitle */}
+  <p className="
+    mt-4 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto
+  ">
+    Building powerful digital experiences that scale with your vision
+  </p>
+
+  {/* Divider */}
+  <div className="mt-6 flex justify-center">
+    <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-white-500 rounded-full"></div>
+  </div>
+
+</div>
 
         {/* Tagline */}
         <p className="text-lg md:text-xl text-gray-300 text-center mb-12 max-w-3xl mx-auto">
