@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Github, 
   Linkedin, 
@@ -13,8 +13,6 @@ import {
 } from "lucide-react";
 
 const Footer = () => {
-  const [scrollPosition, setScrollPosition] = useState(0);
-
   // Reviews data with platform info
   const reviews = [
     { name: "Alex Johnson", rating: 5, text: "Exceptional developer! Delivered beyond expectations.", platform: "Fiverr", avatar: "AJ" },
@@ -54,13 +52,8 @@ const Footer = () => {
     { label: "5-Star Reviews", value: "10+" },
   ];
 
-  // Infinite scroll animation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setScrollPosition((prev) => prev + 1);
-    }, 30);
-    return () => clearInterval(interval);
-  }, []);
+  // Duplicate reviews for seamless loop
+  const duplicatedReviews = [...reviews, ...reviews, ...reviews];
 
   // Platform badge colors
   const getPlatformColor = (platform: string) => {
@@ -146,19 +139,16 @@ const Footer = () => {
             ))}
           </div>
 
-          {/* Infinite Scroll Reviews */}
+          {/* Reviews Carousel - Fixed version */}
           <div className="relative overflow-hidden py-4">
             <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10" />
             <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10" />
-            
-            <div
-              className="flex gap-6 transition-transform duration-100"
-              style={{ transform: `translateX(-${scrollPosition % (reviews.length * 320)}px)` }}
-            >
-              {[...reviews, ...reviews, ...reviews].map((review, index) => (
+
+            <div className="flex w-max animate-scroll gap-6">
+              {duplicatedReviews.map((review, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 w-72 p-4 bg-card/40 backdrop-blur-sm rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 group"
+                  className="flex-shrink-0 w-72 p-4 bg-card/40 backdrop-blur-sm rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 hover:scale-105"
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center text-sm font-bold text-primary-foreground">
@@ -171,12 +161,16 @@ const Footer = () => {
                       </span>
                     </div>
                   </div>
+
                   <div className="flex gap-0.5 mb-2">
                     {[...Array(review.rating)].map((_, i) => (
                       <Star key={i} size={12} className="fill-yellow-500 text-yellow-500" />
                     ))}
                   </div>
-                  <p className="text-xs text-muted-foreground line-clamp-2">"{review.text}"</p>
+
+                  <p className="text-xs text-muted-foreground line-clamp-2">
+                    "{review.text}"
+                  </p>
                 </div>
               ))}
             </div>
@@ -254,11 +248,40 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Wave Animation Keyframes */}
+      {/* Animation Keyframes */}
       <style>{`
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-33.33%);
+          }
+        }
+
         @keyframes wave {
-          0%, 100% { transform: translateX(0) translateY(0); }
-          50% { transform: translateX(-25%) translateY(10px); }
+          0%, 100% {
+            transform: translateX(0);
+          }
+          50% {
+            transform: translateX(-50%);
+          }
+        }
+
+        .animate-scroll {
+          animation: scroll 60s linear infinite;
+        }
+
+        .animate-scroll:hover {
+          animation-play-state: paused;
+        }
+
+        /* Prevent flickering by forcing hardware acceleration */
+        .animate-scroll {
+          will-change: transform;
+          transform: translateZ(0);
+          backface-visibility: hidden;
+          perspective: 1000px;
         }
       `}</style>
     </footer>
