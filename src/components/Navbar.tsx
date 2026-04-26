@@ -10,8 +10,18 @@ export const Navbar = (props) => {
     bgColor: "#0D0716",
     textColor: "#fff",
     links: [
-      { label: "Company-soon", ariaLabel: "About Company", href: "/#company" },
-      { label: "Careers-soon", ariaLabel: "About Careers", href: "/#careers" }
+      { label: "Company", ariaLabel: "About Company", href: "/company" },
+      { label: "Careers", ariaLabel: "About Careers", href: "/careers" }
+    ]
+  },
+  {
+    label: "Services",
+    bgColor: "#271E37",
+    textColor: "#fff",
+    links: [
+      { label: "Web/App development", ariaLabel: "Email us", href: "mailto:kapilrhode0000@gmail.com" },
+      { label: "SEO Optimization", ariaLabel: "LinkedIn", href: "https://www.linkedin.com/in/kabilan12-j/" },
+      { label: "Cloud services in AWS", ariaLabel: "LinkedIn", href: "https://www.linkedin.com/in/kabilan12-j/" }
     ]
   },
   {
