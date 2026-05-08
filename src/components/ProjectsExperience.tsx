@@ -15,8 +15,8 @@ const projects = [
       technologies: ["TypeScript", "Node.js", "NPM", "Webpack"],
       highlights: ["5+ packages published", "1000+ weekly downloads", "Open source contributions"],
       links: [
-        { label: "View on NPM", url: "#" },
-        { label: "GitHub Repo", url: "#" },
+        { label: "View on NPM", url: "https://www.npmjs.com/package/express-dev-logger" },
+        { label: "GitHub Repo", url: "https://github.com/kabilanero/express-api-logger" },
       ],
     },
   },
