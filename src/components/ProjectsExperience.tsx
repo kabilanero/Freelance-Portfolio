@@ -79,6 +79,14 @@ const ProjectsExperience = () => {
   const [isInView, setIsInView] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const checkScreen = () => setIsMobile(window.innerWidth < 768);
+  checkScreen();
+  window.addEventListener("resize", checkScreen);
+  return () => window.removeEventListener("resize", checkScreen);
+}, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -296,7 +304,12 @@ useEffect(() => {
                 animate={{ x: "0%", opacity: 1 }}
                 exit={{ x: "100%", opacity: 0 }}
                 transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                className="absolute right-[3%] top-[10%] w-[40%] h-[80%] bg-card/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-border/50 overflow-hidden flex flex-col"
+                className={`fixed z-50 bg-card/95 backdrop-blur-2xl shadow-2xl border border-border/50 flex flex-col
+  ${isMobile 
+    ? "bottom-0 left-0 w-full h-[90%] rounded-t-3xl"   // MOBILE
+    : "right-[3%] top-[10%] w-[40%] h-[80%] rounded-3xl" // DESKTOP
+  }
+`}
                 style={{
                   boxShadow: `0 0 60px ${selectedProject.color}20, 0 25px 50px -12px rgba(0, 0, 0, 0.25)`,
                 }}
