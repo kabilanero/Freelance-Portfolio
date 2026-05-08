@@ -335,8 +335,7 @@ useEffect(() => {
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                  {/* Description */}
+<div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>                  {/* Description */}
                   <div>
                     <h5 className="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wider">
                       Overview
