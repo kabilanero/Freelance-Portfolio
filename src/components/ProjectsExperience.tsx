@@ -58,7 +58,7 @@ const projects = [
     id: 4,
     year: "2025",
     code: "LN-004",
-    title: "Experience (1.5+ years)",
+    title: "Experience (2 years)",
     description: "Started the coding journey, learning fundamentals and building the foundation for a career in web development.",
     color: "hsl(24, 94%, 50%)",
     icon: Rocket,

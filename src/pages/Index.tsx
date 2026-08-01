@@ -5,7 +5,6 @@ import ServicesSection from "@/components/ServicesSection";
 import MagicBento from "@/components/Bentoservices";
 import MentorshipContact from "@/components/MentorshipContact";
 import Footer from "@/components/Footer";
-import MouseParticles from '@/components/HeroOrbit';
 import { Navbar } from "@/components/Navbar";
 
 const Index = () => {

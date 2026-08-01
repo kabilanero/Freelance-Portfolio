@@ -1,389 +1,284 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import imgport from "../assests/WhatsApp Image 2024-09-20 at 12.12.36 PM-removebg-preview-Photoroom.jpg";
-import Weblogo from "../assests/Weblogo.png";
+import resume from "../assests/KABILANJ RESUME-Compressed.pdf";
 import RotatingText from "./ui/Orbitcontent";
-import BlobBackground from './ui/blobeffect';
-import { Code, Github, Linkedin, Twitter, Instagram, DiscIcon as Discord, Mail } from 'lucide-react';
-import SocialPanel from './Socialconnector';
+import SocialPanel from "./Socialconnector";
 
-// Optimized Mouse Particles with throttling
-const MouseParticles = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationFrameRef = useRef<number>();
-  const particlesRef = useRef<any[]>([]);
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const throttleTimeoutRef = useRef<NodeJS.Timeout>();
+/**
+ * Hero — single viewport, no scroll-jacking, no per-frame canvas/JS.
+ * All motion is either a one-time mount animation (framer-motion, cheap),
+ * a GPU-only translate (cursor-parallax layers on the portrait), or a
+ * pure CSS animation (word-rise, clay wobble, ticker) defined in index.css.
+ */
 
-  class Particle {
-    x: number;
-    y: number;
-    size: number;
-    speedX: number;
-    speedY: number;
-    opacity: number;
+const skills = [
+  "Web Development",
+  "Technical SEO",
+  "Core Web Vitals",
+  "Site Speed",
+  "On-Page SEO",
+  "React & TypeScript",
+  "Responsive Design",
+  "Indexing & Ranking",
+];
 
-    constructor(x: number, y: number) {
-      this.x = x;
-      this.y = y;
-      this.size = Math.random() * 3 + 1;
-      this.speedX = (Math.random() - 0.5) * 2;
-      this.speedY = (Math.random() - 0.5) * 2;
-      this.opacity = 1;
-    }
-
-    update() {
-      this.x += this.speedX;
-      this.y += this.speedY;
-      this.opacity -= 0.015;
-      this.size -= 0.03;
-    }
-
-    draw(ctx: CanvasRenderingContext2D) {
-      if (this.opacity <= 0 || this.size <= 0.2) return;
-      
-      ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = "rgba(139, 92, 246, 0.6)";
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, Math.max(0.2, this.size), 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (throttleTimeoutRef.current) return;
-    
-    throttleTimeoutRef.current = setTimeout(() => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
-      
-      for (let i = 0; i < 2; i++) {
-        particlesRef.current.push(new Particle(mouseRef.current.x, mouseRef.current.y));
-      }
-      
-      throttleTimeoutRef.current = undefined;
-    }, 16);
-  }, []);
-
-  const animate = useCallback(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    
-    if (!canvas || !ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    for (let i = particlesRef.current.length - 1; i >= 0; i--) {
-      const particle = particlesRef.current[i];
-      particle.update();
-      particle.draw(ctx);
-      
-      if (particle.opacity <= 0 || particle.size <= 0.2) {
-        particlesRef.current.splice(i, 1);
-      }
-    }
-    
-    animationFrameRef.current = requestAnimationFrame(animate);
-  }, []);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    
-    resizeCanvas();
-    animate();
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("resize", resizeCanvas);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", resizeCanvas);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (throttleTimeoutRef.current) {
-        clearTimeout(throttleTimeoutRef.current);
-      }
-    };
-  }, [animate, handleMouseMove]);
-
-  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-50" />;
-};
-
+// Sparkle points evenly spread around the photo's edge, each twinkling
+// on its own delay — a "glitter" ring with no drawn circle.
+const SPARKLES = [18, 62, 104, 146, 188, 230, 272, 314].map((deg, i) => {
+  const rad = (deg * Math.PI) / 180;
+  return {
+    top: 50 + 49 * Math.sin(rad),
+    left: 50 + 49 * Math.cos(rad),
+    size: i % 3 === 0 ? 5 : 3,
+    delay: (i * 0.35).toFixed(2),
+    duration: (2 + (i % 3) * 0.6).toFixed(2),
+  };
+});
 
 const HeroOrbit = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
+  // Raw pointer position, normalized to -0.5..0.5 relative to the hero section.
+  const px = useMotionValue(0);
+  const py = useMotionValue(0);
 
-  // Responsive detection
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  // Each layer springs toward the pointer at its own speed/damping —
+  // that difference in lag is what reads as "depth". Pure translate, GPU-only.
+  const springCfg = { stiffness: 60, damping: 18, mass: 0.6 };
+  const glowX = useSpring(useTransform(px, [-0.5, 0.5], [-18, 18]), springCfg);
+  const glowY = useSpring(useTransform(py, [-0.5, 0.5], [-14, 14]), springCfg);
 
-  // Define transforms directly (not inside useMemo)
-  const orbitX = useTransform(
-    scrollYProgress,
-    isMobile ? [0, 0.4] : [0, 1],
-    isMobile ? ["0%", "-55%"] : ["0%", "-35%"]
-  );
-  
-  const orbitScale = useTransform(
-    scrollYProgress,
-    isMobile ? [0, 0.4] : [0, 1],
-    isMobile ? [1, 0.55] : [1, 0.7]
-  );
-  
-  const orbitOpacity = useTransform(
-    scrollYProgress,
-    isMobile ? [0, 0.35, 0.45] : [0, 0.8],
-    isMobile ? [1, 1, 0] : [1, 0]
-  );
-  
-  const profileX = useTransform(
-    scrollYProgress,
-    [0, 0.4, 0.7],
-    ["100%", "0%", "0%"]
-  );
-  
-  const profileOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.3, 0.7],
-    [0, 0, 1]
-  );
-  
-  const instructionsY = useTransform(
-    scrollYProgress,
-    [0, 0.5, 0.8],
-    [100, 100, 0]
-  );
-  
-  const instructionsOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.6, 0.9],
-    [0, 0, 1]
-  );
+  const photoX = useSpring(useTransform(px, [-0.5, 0.5], [-14, 14]), { stiffness: 110, damping: 16, mass: 0.4 });
+  const photoY = useSpring(useTransform(py, [-0.5, 0.5], [-10, 10]), { stiffness: 110, damping: 16, mass: 0.4 });
 
-  // Dynamic gradient
-  const [scrollProgress, setScrollProgress] = useState(0);
-  
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    setScrollProgress(latest);
-  });
+  const handlePointerMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    px.set((e.clientX - rect.left) / rect.width - 0.5);
+    py.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
 
-  const gradientStyle = useMemo(() => ({
-    background: `linear-gradient(
-      to bottom,
-      hsl(var(--background)),
-      hsl(262, ${50 + scrollProgress * 30}%, ${15 + scrollProgress * 20}%),
-      hsl(var(--background))
-    )`,
-  }), [scrollProgress]);
-
-  const orbitSize = "min(90vw, 600px)";
+  const handlePointerLeave = () => {
+    px.set(0);
+    py.set(0);
+  };
 
   return (
-    <div id='home' ref={containerRef} className="relative min-h-[200vh]" style={gradientStyle}>
-      <BlobBackground containerRef={containerRef} seed={12345} count={4} zIndex={10} />
-      <MouseParticles />
-      
-      {/* Social Panel - replaces the old button */}
+    <section
+      id="home"
+      ref={sectionRef}
+      onMouseMove={handlePointerMove}
+      onMouseLeave={handlePointerLeave}
+      className="relative min-h-screen overflow-hidden bg-background"
+    >
+      {/* Static ambient glow — pure CSS, no scroll listener, no repaint cost */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 78% 20%, hsl(var(--primary) / 0.16) 0%, transparent 60%), radial-gradient(45% 40% at 15% 75%, hsl(var(--secondary) / 0.12) 0%, transparent 60%)",
+        }}
+      />
+
       <SocialPanel />
 
-      {/* Sticky Container */}
-      <div className="sticky top-0 h-screen overflow-hidden">
-        
-       {/* Orbit Section */}
-<motion.div
-  style={{
-    x: orbitX,
-    scale: orbitScale,
-    opacity: orbitOpacity,
-  }}
-  className="absolute inset-0 flex flex-col items-center justify-center"
->
-  {/* Orbit ring + inner content */}
-  <div className="relative flex items-center justify-center">
-    <div
-      className="orbit-ring animate-float rounded-full border-2 border-primary/30 shadow-2xl"
-      style={{ width: orbitSize, height: orbitSize }}
-    />
-
-    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        className="space-y-4 md:space-y-6 max-w-[90%] md:max-w-full"
-      >
-        {/* Logo */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 300 }}
-          className="inline-block rounded-full w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-52 lg:h-52 -mt-8"
-        >
-          <img src={Weblogo} alt="logo" className="w-full h-full object-contain" />
-        </motion.div>
-
-        <div className="md:-mt-6">
-          <div className="md:-mt-6">
-            <h1
-              className="font-bold tracking-tight leading-none"
-              style={{ fontSize: "clamp(2rem, 6vw, 3.75rem)" }}
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-6 pt-32 pb-16 lg:px-10">
+        <div className="grid items-center gap-16 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
+          {/* ── Left: kinetic headline & copy ─────────────────────── */}
+          <div>
+            <div
+              className="fade-up mb-6 flex items-center gap-2 font-mono-alt text-xs uppercase tracking-[0.18em] text-perf"
+              style={{ animationDelay: "0.1s" }}
             >
-              <p className="bg-gradient-to-r from-primary via-secondary to-primary text-3xl flex flex-row gap-3 items-center justify-center bg-clip-text text-transparent animate-pulse leading-none">
-                <span className="Building first-letter:text-4xl text-lg antialiased tracking-tight titan-one-regular"> We Build </span>
-                <RotatingText
-                  texts={[`React(Js/Ts) `, ` Animated `, `Cool! site `, `Using `]}
-                  mainClassName="sm:px-4 md:px-3 lg:px-6 bg-cyan-400 text-black overflow-hidden sm:py-1/2 md:py-1/2 justify-center rounded-lg text-2xl titan-one-regular"
-                  staggerFrom={"last"}
-                  initial={{ y: "100%" }}
-                  exit={{ y: "-120%" }}
-                  staggerDuration={0.085}
-                  splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
-                  transition={{ type: "spring", damping: 30, stiffness: 500 }}
-                  rotationInterval={3000}
-                />
-              </p>
-              <span
-                className="text-[#fafafa]-500 leading-none"
-                style={{ fontSize: "clamp(1.1rem, 2vw, 0.45rem)" }}
-              >
-                Future ready web experiences
+              <span className="h-px w-6 bg-perf" />
+              Freelance Developer · SEO Performance
+            </div>
+
+            <h1 className="font-display text-[clamp(2.4rem,6vw,5.2rem)] font-bold leading-[0.98] tracking-tight text-foreground">
+              <span className="block overflow-hidden">
+                <span
+                  className="word-rise"
+                  style={{ animationDelay: "0.25s" }}
+                >
+                  Websites that
+                </span>
+              </span>
+              <span className="block overflow-hidden">
+                <span
+                  className="word-rise bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                  style={{ animationDelay: "0.37s" }}
+                >
+                  rank first.
+                </span>
+              </span>
+              <span className="mt-1 flex flex-wrap items-center gap-3">
+                <span
+                  className="fade-up"
+                  style={{ animationDelay: "0.55s" }}
+                >
+                  Load
+                </span>
+                <span
+                  className="fade-up"
+                  style={{ animationDelay: "0.65s" }}
+                >
+                  <RotatingText
+                    texts={["faster.", "cleaner.", "smoother."]}
+                    mainClassName="inline-flex rounded-lg bg-perf px-4 py-1.5 text-perf-foreground text-[0.55em] leading-none font-display"
+                    staggerFrom="center"
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{ opacity: 1, y: [0, -9, 0] }}
+                    exit={{ opacity: 0, y: 0 }}
+                    staggerDuration={0.028}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    rotationInterval={2400}
+                  />
+                </span>
               </span>
             </h1>
 
             <p
-              className="text-[#fcab29] max-w-md mx-auto mt-2 titan-one-regular"
-              style={{ fontSize: "clamp(0.875rem, 2.5vw, 1.0rem)" }}
+              className="fade-up mt-7 max-w-md text-base text-muted-foreground sm:text-lg"
+              style={{ animationDelay: "0.85s" }}
             >
-              Crafting digital experiences that push boundaries
+              I build and optimize websites for founders who need more than
+              a pretty layout — clean code, high PageSpeed scores, and pages
+              Google actually wants to rank.
             </p>
-          </div>
 
-          {/* DESKTOP only buttons — inside orbit */}
-          <div className="hidden md:flex gap-3 sm:gap-4 justify-center pt-2 flex-wrap">
-            <button
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
-              style={{
-                height: "clamp(2.25rem, 5vw, 2.75rem)",
-                padding: "0 clamp(1rem, 3vw, 2rem)",
-                fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-              }}
+            <div
+              className="fade-up mt-9 flex flex-wrap items-center gap-5"
+              style={{ animationDelay: "1s" }}
             >
-              Get Started
-            </button>
-            <button
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/30 bg-background hover:bg-primary/10 text-foreground"
-              style={{
-                height: "clamp(2.25rem, 5vw, 2.75rem)",
-                padding: "0 clamp(1rem, 3vw, 2rem)",
-                fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-              }}
-            >
-              Learn More
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  </div>
+              <a
+                href="mailto:kapilrhode0000@gmail.com"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 font-mono-alt text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
+              >
+                Start a project →
+              </a>
+              <a
+                href={resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-b border-border pb-1 font-mono-alt text-sm text-foreground transition-colors hover:border-foreground"
+              >
+                Download resume
+              </a>
+            </div>
 
-  {/* MOBILE only buttons — outside orbit ring, below it */}
-  <div className="flex md:hidden gap-3 justify-center mt-8 px-6 w-full">
-    <button
-      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
-      style={{
-        height: "clamp(2.25rem, 5vw, 2.75rem)",
-        padding: "0 clamp(1rem, 3vw, 2rem)",
-        fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-      }}
-    >
-      Get Started
-    </button>
-    <button
-      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/30 bg-background hover:bg-primary/10 text-foreground"
-      style={{
-        height: "clamp(2.25rem, 5vw, 2.75rem)",
-        padding: "0 clamp(1rem, 3vw, 2rem)",
-        fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-      }}
-    >
-      Learn More
-    </button>
-  </div>
-
-</motion.div>
-
-        {/* Profile Section */}
-        <motion.div
-          style={{
-            x: profileX,
-            opacity: profileOpacity,
-          }}
-          className="absolute right-[12%] md:right-[10%] top-1/2 -translate-y-1/2 w-[280px] sm:w-[350px] md:w-[400px] lg:w-[450px]"
-        >
-          <div className="space-y-6">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto"
-            >
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-secondary to-primary opacity-20 blur-2xl animate-pulse" />
-              <div className="relative w-full h-full rounded-full border-4 border-primary/30 overflow-hidden bg-muted shadow-2xl">
-                <img src={imgport} alt="Profile" className="w-full h-full object-cover object-top" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              style={{
-                y: instructionsY,
-                opacity: instructionsOpacity,
-              }}
-              className="space-y-4 text-center"
+            <div
+              className="fade-up mt-14 flex max-w-lg flex-wrap gap-10 border-t border-border pt-7"
+              style={{ animationDelay: "1.1s" }}
             >
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  Kabilan Developer
-                </h2>
-                <p className="text-muted-foreground text-base sm:text-lg mt-1">
-                  Full-Stack Developer & Creative Designer
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <span>Available for freelance & full-time work</span>
+                <div className="font-display text-3xl font-bold text-foreground">
+                  15<span className="text-perf">+</span>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                  <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-                  <span>Based in India, TN</span>
+                <div className="mt-1 font-mono-alt text-[11px] uppercase tracking-wide text-muted-foreground">
+                  Sites shipped
                 </div>
               </div>
-
-              <div className="flex gap-2 sm:gap-3 justify-center pt-2 flex-wrap">
-                {/* Social buttons removed from here - now in side panel */}
+              <div>
+                <div className="font-display text-3xl font-bold text-foreground">
+                  2<span className="text-perf">yrs</span>
+                </div>
+                <div className="mt-1 font-mono-alt text-[11px] uppercase tracking-wide text-muted-foreground">
+                  Industry experience
+                </div>
               </div>
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+
+          {/* ── Right: layered cursor-parallax portrait ───────────── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto flex flex-col items-center gap-6 justify-self-center lg:justify-self-end"
+          >
+            <div className="relative h-72 w-72 sm:h-80 sm:w-80">
+              {/* Layer 1 — ambient glow, slowest, furthest back */}
+              <motion.div
+                aria-hidden
+                style={{ x: glowX, y: glowY }}
+                className="absolute -inset-10 rounded-full bg-gradient-to-br from-primary/25 via-secondary/15 to-transparent blur-3xl"
+              />
+
+              {/* Layer 2 — the claymorphic photo card, with a glitter edge */}
+              <motion.div
+                style={{ x: photoX, y: photoY }}
+                className="clay-shape clay-shadow absolute inset-0 overflow-hidden bg-gradient-to-br from-card to-muted"
+              >
+                <img
+                  src={imgport}
+                  alt="Kabilan — Web Developer & SEO Specialist"
+                  className="h-full w-full object-cover object-top"
+                />
+              </motion.div>
+
+              {/* Glitter — twinkling sparkles right at the photo's edge, no drawn ring */}
+              {SPARKLES.map((s, i) => (
+                <span
+                  key={i}
+                  aria-hidden
+                  className="glitter-dot"
+                  style={{
+                    top: `${s.top}%`,
+                    left: `${s.left}%`,
+                    width: s.size,
+                    height: s.size,
+                    animationDelay: `${s.delay}s`,
+                    animationDuration: `${s.duration}s`,
+                  }}
+                />
+              ))}
+
+              {/* Two dots orbiting the photo on an invisible path, opposite directions */}
+              <div className="absolute -inset-4" aria-hidden>
+                <div className="absolute inset-0 orbit-cw">
+                  <span className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-perf shadow-[0_0_12px_hsl(var(--perf)/0.8)]" />
+                </div>
+              </div>
+              <div className="absolute -inset-4 rotate-180" aria-hidden>
+                <div className="absolute inset-0 orbit-ccw">
+                  <span className="absolute left-1/2 top-0 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary shadow-[0_0_10px_hsl(var(--secondary)/0.7)]" />
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <h2 className="font-display text-xl font-semibold text-foreground">
+                Kabilan
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Full-Stack Developer &amp; SEO Specialist
+              </p>
+              <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                <span className="h-1.5 w-1.5 rounded-full bg-perf" />
+                Available for freelance &amp; full-time work
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </div>
+
+      {/* ── Bottom skills ticker — pure CSS marquee, no JS per frame ── */}
+      <div className="relative z-10 border-t border-border/70 py-5">
+        <div className="flex w-max ticker-track">
+          {[...skills, ...skills].map((skill, i) => (
+            <span
+              key={i}
+              className="flex items-center gap-7 whitespace-nowrap px-7 font-mono-alt text-xs uppercase tracking-wide text-muted-foreground"
+            >
+              {skill}
+              <span className="text-perf text-[8px]">◆</span>
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 
