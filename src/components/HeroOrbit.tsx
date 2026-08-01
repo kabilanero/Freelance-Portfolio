@@ -93,7 +93,7 @@ const HeroOrbit = () => {
               style={{ animationDelay: "0.1s" }}
             >
               <span className="h-px w-6 bg-perf" />
-              Freelance Developer · SEO Performance
+              Freelance Developer · SEO Performance .Devops
             </div>
 
             <h1 className="font-display text-[clamp(2.4rem,6vw,5.2rem)] font-bold leading-[0.98] tracking-tight text-foreground">
@@ -143,7 +143,7 @@ const HeroOrbit = () => {
               className="fade-up mt-7 max-w-md text-base text-muted-foreground sm:text-lg"
               style={{ animationDelay: "0.85s" }}
             >
-              I build and optimize websites for founders who need more than
+              I build and optimize websites and web-applications for founders who need more than
               a pretty layout — clean code, high PageSpeed scores, and pages
               Google actually wants to rank.
             </p>
